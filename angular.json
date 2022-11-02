@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pokemon": {
+    "PokemonDemo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/pokemon",
+            "outputPath": "dist/pokemon-demo",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,18 +72,22 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "pokemon:build:production"
+              "browserTarget": "PokemonDemo:build:production"
             },
             "development": {
-              "browserTarget": "pokemon:build:development"
+              "browserTarget": "PokemonDemo:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "browserTarget": "PokemonDemo:build",
+            "proxyConfig": "src/proxy.conf.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pokemon:build"
+            "browserTarget": "PokemonDemo:build"
           }
         },
         "test": {
@@ -107,5 +111,7 @@
       }
     }
   },
-  "defaultProject": "pokemon"
+  "cli": {
+    "analytics": "92a9ee52-2e1b-45b2-90cd-2285b7748a58"
+  }
 }
