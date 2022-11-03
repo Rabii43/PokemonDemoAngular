@@ -4,7 +4,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from "../../services/auth.service";
 import {TokenStorageService} from "../../services/token-storage.service";
-
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -15,9 +15,10 @@ export class LoginComponent implements OnInit {
   loading = false;
   isLoginFailed = false;
   submitted = false;
-  name: string = ''
-  password: string = ''
-  errorMessage = '';
+  name: string = '';
+  password: string = '';
+  errorMessage: any;
+  message:string='';
   focus!: any;
   focus1!: any;
 
@@ -28,10 +29,11 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthService,
     private tokenStorage: TokenStorageService
   ) {
+    this.errorMessage = new BehaviorSubject(this.authenticationService.currentMessage)
+    this.errorMessage.subscribe((value: any) => this.message=value.source.value);
   }
 
   ngOnInit() {
-
   }
 
   onSubmit() {
@@ -42,8 +44,6 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.authenticationService.login(this.name, this.password).subscribe(
       (res) => {
-        console.log(res)
-        localStorage.setItem('access_token', res.token);
         this.tokenStorage.saveToken(res.token);
         this.tokenStorage.saveRefreshToken(res.refresh_token);
         const data = jwt_decode(res.token);

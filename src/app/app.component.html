@@ -1,8 +1,18 @@
 <nav>
   <div class="nav-wrapper teal">
-    <a href="#" class="brand-logo center">
+    <a href="/pokemons" class="brand-logo center">
       Pokédex
     </a>
+    <div *ngIf="vesible">
+      <div class="right white chip marginT">
+        <span (click)="logout()">Logaout
+          <img class="white" width=15 src="assets/logout.png"></span></div>
+      <div class="chip right marginT">
+        <img [src]="imaUrl" alt="">
+        {{user.username}}
+      </div>
+    </div>
+
   </div>
 </nav>
 

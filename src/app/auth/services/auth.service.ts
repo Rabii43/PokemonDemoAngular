@@ -9,6 +9,7 @@ import {
 import {Router} from '@angular/router';
 
 import {login, tokenRefresh} from '../../../api/entryPoint';
+import {TokenStorageService} from "./token-storage.service";
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -19,12 +20,11 @@ const httpOptions = {
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, public router: Router) {
+  constructor(private http: HttpClient, public router: Router, private tokenStorage: TokenStorageService) {
   }
 
   get isLoggedIn(): boolean {
-    const authToken = localStorage.getItem('access_token');
-    return authToken !== null;
+    return this.tokenStorage.getToken() !== null;
   }
 
   private messageSource = new BehaviorSubject<string>('');
@@ -38,14 +38,15 @@ export class AuthService {
 
   // Sign-in
   login(email: string, password: string): Observable<any> {
+    this.changeMessage('Login en cour .....');
     return this.http.post<any>(login, {
       email,
       password
-    }, {headers: this.headers}).pipe(tap(res => res),
+    }, {headers: this.headers}).pipe(tap(res =>{ res
+    this.changeMessage('user LogIn')}),
       catchError(this.errorHandler)
     );
   }
-
 
   refreshToken(token: string) {
     return this.http.post(tokenRefresh, {
@@ -53,19 +54,8 @@ export class AuthService {
     }, httpOptions);
   }
 
-
-  getToken() {
-    return localStorage.getItem('access_token');
-  }
-
-  doLogout() {
-    const removeToken = localStorage.removeItem('access_token');
-    if (removeToken == null) {
-      this.router.navigate(['login']);
-    }
-  }
-
   errorHandler({error}: { error: any }) {
+    this.changeMessage('vérifier vos coordonnées ')
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
